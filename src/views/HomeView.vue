@@ -1,25 +1,25 @@
 <template>
   <div class="home">
-    <input type="text" v-model="name" />
-    <ul>
-      <li v-for="(movie, index) in result" :key="index">
-        <img
-          :src="
-            'https://www.themoviedb.org/t/p/w220_and_h330_face/' +
-            movie.backdrop_path
-          "
-          :alt="movie.original_title"
-        />
-      </li>
-    </ul>
+    <div>
+      <h1>Je suis dans la page Home</h1>
+    </div>
+     <div>
+    <div class="home-body">
+      <MovieList class="movie"   />
+      <SidebarRight class="sidebar" />
+
+    </div>
+    </div> 
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import axios from "axios";
-
+import MovieList from "../components/MovieList.vue"
+import SidebarRight from "../components/SidebarRight.vue"
 @Options({
+  components: {MovieList, SidebarRight},
   data() {
     return {
       film: {},
@@ -27,7 +27,7 @@ import axios from "axios";
       result: [],
     };
   },
-  components: {},
+
   watch: {
     name() {
       this.searchMovie();
@@ -40,26 +40,43 @@ import axios from "axios";
           this.name +
           "&page=1&include_adult=false"
       );
-      console.log(result);
       this.result = result.data.results;
-      console.log(this.result);
+      console.log(this.result)
     },
-  },
-  // mounted() {},
+    async castMovie() {
+      let result = await axios.get("https://api.themoviedb.org/3/movie/672/credits?api_key=6dc646632d1c11debbc7e874ea32f797&language=en-US")
+      console.log(result.data)
+    }
+    // async getPopularMovie() {
+    //   let result = await axios.get(
+    //     "https://api.themoviedb.org/3/movie/top_rated?api_key=6dc646632d1c11debbc7e874ea32f797&language=en-US&page=1"
+    //   );
+    // },
+  },mounted() {
+    this.castMovie()
+  }
 })
 export default class HomeView extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-ul {
+.home {
   display: flex;
-  flex-wrap: wrap;
-  li {
-    list-style-type: none;
-    img {
-      width: 250px;
-      height: 250px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 100%;
+  min-height: 100vh;
+
+  .home-body {
+    display: flex;
+    width: 100%;
+      .movie {
+      max-width: 60%;
+      overflow: hidden;
+      margin: 0  0.2rem;
     }
+    
   }
 }
 </style>
